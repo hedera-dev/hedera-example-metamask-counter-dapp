@@ -21,13 +21,15 @@ async function contractExecuteFcn(walletData, contractAddress) {
 		console.log(`- Initial count: ${initialCount}`);
 
 		// EXECUTE CONTRACT FUNCTION
+		const gasLimit = 100000;
 		const myContract = new ethers.Contract(contractAddress, abi, signer);
-		const incrementTx = await myContract.increment();
+		const incrementTx = await myContract.increment({ gasLimit: gasLimit });
 		const incrementRx = await incrementTx.wait();
 		txHash = incrementRx.transactionHash;
 
 		// CHECK SMART CONTRACT STATE AGAIN
 		await delay(5000); // DELAY TO ALLOW MIRROR NODES TO UPDATE BEFORE QUERYING
+
 		finalCount = await getCountState();
 		console.log(`- Final count: ${finalCount}`);
 		console.log(`- Contract executed. Transaction hash: \n${txHash} ✅`);
